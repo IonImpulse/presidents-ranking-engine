@@ -5,10 +5,10 @@ async function GetPortrait(pres_wiki_url) {
 
     const response = await fetch(url_to_fetch, {
         headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
         }
     });
-    
+
     const wiki_json = await response.json();
     
     return wiki_json.query.pages[0].original.source;
