@@ -1,13 +1,9 @@
-const WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages|pageterms&piprop=original&pilicense=any&titles=";
+const WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&formatversion=2&prop=pageimages|pageterms&piprop=original&pilicense=any&titles=";
 
 async function GetPortrait(pres_wiki_url) {
     const url_to_fetch = WIKI_API_URL + pres_wiki_url.substring(30);
 
-    const response = await fetch(url_to_fetch, {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-        }
-    });
+    const response = await fetch(url_to_fetch);
 
     const wiki_json = await response.json();
     
@@ -38,9 +34,14 @@ async function main() {
 
     let img_holder = document.getElementById("choices-holder");
     
-    let pres_url = await GetPortrait(pres_data[Math.floor((Math.random() * 46) + 1) - 1].wiki_url);
+    for (i = 0; i < 46; i++) {
+        let pres_url = await GetPortrait(pres_data[i].wiki_url);
+        let pres_extension = pres_url.split(".").pop();
 
-    img_holder.innerHTML = `<img src="${pres_url}">`;
+        img_holder.innerHTML += `\n<embed width=500
+        src="${pres_url}" type="image/${pres_extension}"
+        negative=yes>`;
+    }
 }
 
 main();
