@@ -3,7 +3,12 @@ const WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&format=jso
 async function GetPortrait(pres_wiki_url) {
     const url_to_fetch = WIKI_API_URL + pres_wiki_url.substring(30);
 
-    const response = await fetch(url_to_fetch);
+    const response = await fetch(url_to_fetch, {
+        headers: {
+            'Access-Control-Allow-Origin': '*'
+        }
+    });
+    
     const wiki_json = await response.json();
     
     return wiki_json.query.pages[0].original.source;
@@ -33,7 +38,9 @@ async function main() {
 
     let img_holder = document.getElementById("choices-holder");
     
-    let pres_url = Math.floor((Math.random() * 46) + 1) - 1;
+    let pres_url = await GetPortrait(pres_data[Math.floor((Math.random() * 46) + 1) - 1].wiki_url);
+
+    img_holder.innerHTML = `<img src="${pres_url}">`;
 }
 
 main();
