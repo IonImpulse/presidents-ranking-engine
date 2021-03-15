@@ -25,3 +25,15 @@ async function load_data() {
         });
     });
 }
+
+async function main() {
+    const pres_data = await load_data()
+
+    console.log(pres_data);
+
+    let img_holder = document.getElementById("choices-holder");
+    
+    let pres_url = Math.floor((Math.random() * 46) + 1) - 1;
+}
+
+main();
