@@ -94,6 +94,7 @@ function nextItems() {
             let right_card = document.getElementById("right-button");
             left_card.innerHTML = `<img class="pres-pic" src="${urls[e1]}"/> ${pres_data[e1].name}`;
             right_card.innerHTML = `<img class="pres-pic" src="${urls[e2]}"/> ${pres_data[e2].name}`;
+            UTIF.replaceIMG();
             return;
         }
     } else {
@@ -112,13 +113,20 @@ function nextItems() {
 
             console.log(items);
 
-            document.location = document.location.href + '/' + items.join("+");
+            document.location = document.location.href + '?code=' + items.join("+");
             
             start();
         }
     }
 }
 
+function getBaseUrl() {
+    return window.location.href.match(/^.*\//);
+}
+
+function GoHome() {
+    document.location = getBaseUrl();
+}
 selected = function (which) {
     switch (which) {
         case 'left':
@@ -132,16 +140,28 @@ selected = function (which) {
     nextItems();
 };
 
-async function start() {
-    let show_list = false;
-    
-    if (document.location.href.contains("+")) {
-        const pres_list = document.location.href.split("/").pop().split("+");
-        
-        document.getElementById("choices-holder").innerHTML = "";
-        document.getElementById("pres-table-holder")
+function CopyToClipboard() {
+    var dummy = document.createElement('input'),
+    text = window.location.href;
 
-        show_list = true;
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.type = "text";
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+
+    document.getElementById("question").innerHTML = "Copied!";
+}
+
+async function start() {
+    let pres_list = false;
+    if (document.location.href.includes("code")) {
+        pres_list = document.location.href.split("=").pop().split("+");
+        
+        document.getElementById("question").innerText = "Loading...";
+
+        document.getElementById("choices-holder").innerHTML = "";
     }
     
     console.log("Loading data...");
@@ -149,48 +169,66 @@ async function start() {
     const pres_data = await LoadData();
     const urls = await LoadPresURLS(pres_data);
 
+    if (pres_list !== false) {
+        let question = document.getElementById("question");
+
+        question.innerText = "Click to copy custom list link!";
+        question.addEventListener("click",CopyToClipboard);
+        question.style.cursor = "pointer";
+        let holder = document.getElementById("choices-holder");
+
+        holder.innerHTML = "";
+
+        for (i in pres_list) {
+            let pres_index = parseInt(pres_list[i]);
+            holder.innerHTML += `\n<div class="good-button">\b<img class="pres-pic" src="${urls[pres_index]}"/>\n${i - -1}) ${pres_data[pres_index].name}</div>\n`;
+        }
+
+
+        UTIF.replaceIMG();
+
+    } else {
+        let sort_keys = [];
+        for (i = 0; i < pres_data.length; i++) {
+            sort_keys.push(i);
+        }
     
-
-    let sort_keys = [];
-    for (i = 0; i < pres_data.length; i++) {
-        sort_keys.push(i);
-    }
-
-    sessionStorage.setItem("pres_data", JSON.stringify(pres_data));
-    sessionStorage.setItem("pres_urls", JSON.stringify(urls));
-
-    const totalJoin = (function () {
-        var arr = [],
-            total = 0;
-
-        for (var i = 0; i < pres_data.length; ++i) {
-            arr.push(1);
-        }
-
-        while (arr.length > 1) {
-            var a = arr.pop(),
-                b = arr.pop(),
-                c = a + b;
-            total += c;
-            arr.unshift(c);
-        }
-
-        return total;
-    })();
-
-
-    console.log("Loaded data!");
-
-    prepItems(sort_keys);
-
-    console.log(sort_keys);
-
-    list = sort_keys;
-
-    nextItems();
-
-    UTIF.replaceIMG();
+        sessionStorage.setItem("pres_data", JSON.stringify(pres_data));
+        sessionStorage.setItem("pres_urls", JSON.stringify(urls));
+    
+        const totalJoin = (function () {
+            var arr = [],
+                total = 0;
+    
+            for (var i = 0; i < pres_data.length; ++i) {
+                arr.push(1);
+            }
+    
+            while (arr.length > 1) {
+                var a = arr.pop(),
+                    b = arr.pop(),
+                    c = a + b;
+                total += c;
+                arr.unshift(c);
+            }
+    
+            return total;
+        })();
+    
+    
+        console.log("Loaded data!");
+    
+        prepItems(sort_keys);
+    
+        console.log(sort_keys);
+    
+        list = sort_keys;
+    
+        nextItems();
+    }    
 
 }
+
+document.getElementById("top").addEventListener("click", GoHome);
 
 start();

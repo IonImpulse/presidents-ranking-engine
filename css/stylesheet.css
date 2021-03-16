@@ -24,8 +24,13 @@ number-flag {
     border-left: .2vmax solid white;
     border-bottom: .2vmax solid white;
     box-shadow: .5vmax .5vmax rgb(231, 60, 60);
+    cursor: pointer;
+    transition: box-shadow ease-in-out .3s, transform ease-in-out .1s;
 }
-
+#top:hover {
+    transform: translate(.2vmax, .2vmax);
+    box-shadow: .5vmax .5vmax #3C14D0;
+}
 #subtext {
     font-family: 'JetBrains Mono', monospace;
     font-size: 1vmax;
@@ -39,11 +44,12 @@ number-flag {
 #choices-holder {
     display: flex;
     flex-flow: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     font-size: 1.5vmax;
     transition: ease-in-out .2s;
-    max-width: 20vmax;
+    max-width: 80vmax;
     margin: auto;
     margin-top: 1%;
 }
@@ -51,15 +57,16 @@ number-flag {
 .pres-pic {
     width: 15vmax;
     object-fit: contain;
+    margin-bottom: 1vmax;
 }
 
 .good-button {
     font-family: 'JetBrains Mono', monospace;
     /*placement for code pen*/
-    margin: 0 auto;
     margin-top: 1vmax;
     margin-right: 1vmax;
     margin-left: 1vmax;
+    margin-bottom: 2vmax;
     /*Button Text Style*/
     font-size: inherit;
     text-align: center;
@@ -74,7 +81,9 @@ number-flag {
     outline: none;
     /*Position, Display, Size*/
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 1vmax .75vmax 1vmax;
     cursor: pointer;
     transition: box-shadow ease-in-out .5s, transform ease-in-out .1s;
