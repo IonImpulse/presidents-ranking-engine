@@ -6,7 +6,7 @@ async function GetPortrait(pres_wiki_url) {
     const response = await fetch(url_to_fetch);
 
     const wiki_json = await response.json();
-    
+
     return wiki_json.query.pages[0].original.source;
 }
 
@@ -17,10 +17,10 @@ async function LoadData() {
             dynamicTyping: true,
             worker: true,
             header: true,
-            complete (results, file) {
+            complete(results, file) {
                 resolve(results.data)
             },
-            error (err, file) {
+            error(err, file) {
                 reject(err)
             }
         });
@@ -31,10 +31,10 @@ async function LoadPresURLS(pres_data) {
     console.log(pres_data);
 
     let img_holder = document.getElementById("choices-holder");
-    
+
     let urls = [];
 
-    for (i = 0; i < 46; i++) {
+    for (i = 0; i < pres_data.length; i++) {
         urls.push(GetPortrait(pres_data[i].wiki_url));
     }
 
@@ -43,52 +43,154 @@ async function LoadPresURLS(pres_data) {
     return urls;
 }
 
-function return_left() {
-    sessionStorage.setItem("last_answer", "left");
-    main();
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
-function return_right() {
-    sessionStorage.setItem("last_answer", "right");
-    main();
-}
+var items = [],
+    prepItems = function (list) {
+        list = list.map(function (item) {
+            return [item];
+        });
+        items = list.sort(function () {
+            return Math.random() > 0.5;
+        }).reverse();
+    };
 
-function mergeStep(left, right) {
-    let arr = []
-    // Break out of loop if any one of the array gets empty
-    while (left.length && right.length) {
-        // Pick the smaller among the smallest element of left and right sub arrays 
-        if (sessionStorage.getItem("last_answer") == "left") {
-            arr.push(left.shift())  
+var listOne = [], listTwo = [], joined = [],
+    joinRunningTotal = 0;
+
+function nextItems() {
+    const pres_data = JSON.parse(sessionStorage.getItem("pres_data"));
+    const urls = JSON.parse(sessionStorage.getItem("pres_urls"));
+
+    let remaining = listOne.length + listTwo.length;
+
+    // If there are items left in the lists we're sorting, queue them up to get sorted
+    if (remaining > 0) {
+        if (listTwo.length === 0) {
+            while (listOne.length > 0) {
+                joined.push(listOne.shift());
+            }
+            items.push(joined);
+            joinRunningTotal += joined.length;
+            nextItems();
+            return;
+        } else if (listOne.length === 0) {
+            while (listTwo.length) {
+                joined.push(listTwo.shift());
+            }
+            items.push(joined);
+            joinRunningTotal += joined.length;
+            nextItems();
         } else {
-            arr.push(right.shift()) 
+            var e1 = listOne[0],
+                e2 = listTwo[0];
+
+            let left_card = document.getElementById("left-button");
+            let right_card = document.getElementById("right-button");
+            left_card.innerHTML = `<img class="pres-pic" src="${urls[e1]}"/> ${pres_data[e1].name}`;
+            right_card.innerHTML = `<img class="pres-pic" src="${urls[e2]}"/> ${pres_data[e2].name}`;
+            return;
+        }
+    } else {
+        if (items.length > 1) {
+            listOne = items.shift();
+            listTwo = items.shift();
+            joined = [];
+            nextItems();
+            return;
+        } else {
+            // We're done, we only have one array left, and it's sorted
+
+            items = items[0].filter(function (element) {
+                return element !== undefined;
+            });
+
+            console.log(items);
+
+            document.location = document.location.href + '/' + items.join("+");
+            
+            start();
         }
     }
-    
-    // Concatenating the leftover elements
-    // (in case we didn't go through the entire left or right array)
-    return [ ...arr, ...left, ...right ]
 }
 
-function mergeSort(array) {
-    const half = array.length / 2
+selected = function (which) {
+    switch (which) {
+        case 'left':
+            joined.push(listTwo.shift());
+            break;
+        case 'right':
+            joined.push(listOne.shift());
+            break;
+    }
+
+    nextItems();
+};
+
+async function start() {
+    let show_list = false;
     
-    // Base case or terminating case
-    if(array.length < 2){
-      return array 
+    if (document.location.href.contains("+")) {
+        const pres_list = document.location.href.split("/").pop().split("+");
+        
+        document.getElementById("choices-holder").innerHTML = "";
+        document.getElementById("pres-table-holder")
+
+        show_list = true;
     }
     
-    const left = array.splice(0, half)
-    return merge(mergeSort(left),mergeSort(array))
-}
+    console.log("Loading data...");
 
-
-async function main() {
-    const pres_data = await LoadData()
+    const pres_data = await LoadData();
     const urls = await LoadPresURLS(pres_data);
+
     
-    document.getElementById("left-button").innerHTML = `<img class="pres-pic" src="${urls[0]}"/> ${pres_data[0].name}`;
-    document.getElementById("right-button").innerHTML = `<img class="pres-pic" src="${urls[1]}"/> ${pres_data[1].name}`;
+
+    let sort_keys = [];
+    for (i = 0; i < pres_data.length; i++) {
+        sort_keys.push(i);
+    }
+
+    sessionStorage.setItem("pres_data", JSON.stringify(pres_data));
+    sessionStorage.setItem("pres_urls", JSON.stringify(urls));
+
+    const totalJoin = (function () {
+        var arr = [],
+            total = 0;
+
+        for (var i = 0; i < pres_data.length; ++i) {
+            arr.push(1);
+        }
+
+        while (arr.length > 1) {
+            var a = arr.pop(),
+                b = arr.pop(),
+                c = a + b;
+            total += c;
+            arr.unshift(c);
+        }
+
+        return total;
+    })();
+
+
+    console.log("Loaded data!");
+
+    prepItems(sort_keys);
+
+    console.log(sort_keys);
+
+    list = sort_keys;
+
+    nextItems();
+
+    UTIF.replaceIMG();
+
 }
 
-main();
+start();
