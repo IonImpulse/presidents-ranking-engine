@@ -30,8 +30,6 @@ async function LoadData() {
 async function LoadPresURLS(pres_data) {
     console.log(pres_data);
 
-    let img_holder = document.getElementById("choices-holder");
-
     let urls = [];
 
     for (i = 0; i < pres_data.length; i++) {
@@ -92,8 +90,18 @@ function nextItems() {
 
             let left_card = document.getElementById("left-button");
             let right_card = document.getElementById("right-button");
-            left_card.innerHTML = `<img class="pres-pic" src="${urls[e1]}"/> ${pres_data[e1].name}`;
-            right_card.innerHTML = `<img class="pres-pic" src="${urls[e2]}"/> ${pres_data[e2].name}`;
+
+            let left_html = `<img class="pres-pic" src="${urls[e1]}"/> ${pres_data[e1].name}`;
+            let right_html = `<img class="pres-pic" src="${urls[e2]}"/> ${pres_data[e2].name}`;
+
+            if (left_card.innerHTML != left_html) {
+                left_card.innerHTML = left_html;
+            }
+
+            if (right_card.innerHTML != right_html) {
+                right_card.innerHTML = right_html;
+            }
+            
             UTIF.replaceIMG();
             return;
         }

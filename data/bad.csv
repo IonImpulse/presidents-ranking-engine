@@ -1,9 +1,0 @@
-number,name,wiki_url,start,end,party,state
-1,George Washington,https://en.wikipedia.org/wiki/George_Washington,30/04/1789,4/03/1797,Independent,Virginia
-2,John Adams,https://en.wikipedia.org/wiki/John_Adams,4/03/1797,4/03/1801,Federalist,Massachusetts
-3,Thomas Jefferson,https://en.wikipedia.org/wiki/Thomas_Jefferson,4/03/1801,4/03/1809,Democratic-Republican,Virginia
-4,James Madison,https://en.wikipedia.org/wiki/James_Madison,4/03/1809,4/03/1817,Democratic-Republican,Virginia
-5,James Monroe,https://en.wikipedia.org/wiki/James_Monroe,4/03/1817,4/03/1825,Democratic-Republican,Virginia
-6,John Quincy Adams,https://en.wikipedia.org/wiki/John_Quincy_Adams,4/03/1825,4/03/1829,Democratic-Republican/National Republican,Massachusetts
-7,Andrew Jackson,https://en.wikipedia.org/wiki/Andrew_Jackson,4/03/1829,4/03/1837,Democratic,Tennessee
-8,Martin Van Buren,https://en.wikipedia.org/wiki/Martin_Van_Buren,4/03/1837,4/03/1841,Democratic,New York
