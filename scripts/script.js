@@ -128,8 +128,13 @@ function GoHome() {
     document.location = getBaseUrl();
 }
 
-function GoToLocation(url) {
-    document.location = url;
+function GoToWiki() {
+    pres_index = parseInt(this.id.split("-")[2]);
+    const pres_data = JSON.parse(sessionStorage.getItem("pres_data"));
+
+    console.log(pres_data[pres_index]);
+
+    document.location = pres_data[pres_index].wiki_url;
 }
 selected = function (which) {
     switch (which) {
@@ -172,7 +177,7 @@ async function start() {
 
     const pres_data = await LoadData();
     const urls = await LoadPresURLS(pres_data);
-
+    sessionStorage.setItem("pres_data", JSON.stringify(pres_data));
     if (pres_list !== false) {
         let question = document.getElementById("question");
 
@@ -185,8 +190,13 @@ async function start() {
 
         for (i in pres_list.reverse()) {
             let pres_index = parseInt(pres_list[i]);
-            holder.innerHTML += `\n<div class="good-button">\b<img class="pres-pic" src="${urls[pres_index]}"/>\n${i - -1}) ${pres_data[pres_index].name}</div>\n`;
-            holder.onclick(GoToLocation(pres_data[pres_index].wiki_url));
+            holder.innerHTML += `\n<div id="pres-num-${pres_index}" class="good-button">\b<img class="pres-pic" src="${urls[pres_index]}"/>\n${i - -1}) ${pres_data[pres_index].name}</div>\n`;
+        }
+
+        for (i in pres_list.reverse()) {
+            let pres_index = parseInt(pres_list[i]);
+
+            document.getElementById(`pres-num-${pres_index}`).addEventListener("click", GoToWiki);
         }
 
 
@@ -198,7 +208,6 @@ async function start() {
             sort_keys.push(i);
         }
     
-        sessionStorage.setItem("pres_data", JSON.stringify(pres_data));
         sessionStorage.setItem("pres_urls", JSON.stringify(urls));
     
         const totalJoin = (function () {
