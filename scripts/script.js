@@ -10,7 +10,7 @@ async function GetPortrait(pres_wiki_url) {
     return wiki_json.query.pages[0].original.source;
 }
 
-async function load_data() {
+async function LoadData() {
     return new Promise((resolve, reject) => {
         Papa.parse("https://raw.githubusercontent.com/IonImpulse/presidents-ranking-engine/main/data/USPresidents.csv", {
             download: true,
@@ -27,21 +27,29 @@ async function load_data() {
     });
 }
 
-async function main() {
-    const pres_data = await load_data()
-
+async function LoadPresURLS(pres_data) {
     console.log(pres_data);
 
     let img_holder = document.getElementById("choices-holder");
     
-    for (i = 0; i < 46; i++) {
-        let pres_url = await GetPortrait(pres_data[i].wiki_url);
-        let pres_extension = pres_url.split(".").pop();
+    let urls = [];
 
-        img_holder.innerHTML += `\n<embed width=500
-        src="${pres_url}" type="image/${pres_extension}"
-        negative=yes>`;
+    for (i = 0; i < 46; i++) {
+        urls.push(GetPortrait(pres_data[i].wiki_url));
     }
+
+    urls = await Promise.all(urls);
+
+    return urls;
+}
+
+
+async function main() {
+    const pres_data = await LoadData()
+    const urls = await LoadPresURLS(pres_data);
+
+    document.getElementById("left-button").innerHTML = `<img src="${urls[0]}" width=300 /> ${pres_data[0].name}`;
+    document.getElementById("right-button").innerHTML = `<img src="${urls[1]}" width=300 /> ${pres_data[1].name}`;
 }
 
 main();

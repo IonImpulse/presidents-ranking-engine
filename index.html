@@ -18,13 +18,21 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         
-        <h2>United States of America</h2>
-        <h1>Presidential Ranking Engine</h1>
-
         
-        <div id="choices-holder"></div>
+        <div id="top">
+            <div id="subtext">
+                The United States of America
+            </div>
+            Presidential Ranking Engine
+        </div>
+        
+        <div id="choices-holder">
+                <div class="good-button" id="left-button" onclick="return_false()">NO</div>
+                <div class="good-button" id="right-button" onclick="return_true()">YES</div>
+        </div>
 
         <script src="scripts/papaparse.min.js"></script>
+        <script src="scripts/UTIF.js"></script>
         <script src="scripts/script.js"></script>
         
     </body>
