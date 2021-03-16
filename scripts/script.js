@@ -12,7 +12,7 @@ async function GetPortrait(pres_wiki_url) {
 
 async function LoadData() {
     return new Promise((resolve, reject) => {
-        Papa.parse("https://raw.githubusercontent.com/IonImpulse/presidents-ranking-engine/main/data/USPresidents.csv", {
+        Papa.parse("https://raw.githubusercontent.com/IonImpulse/presidents-ranking-engine/main/data/bad.csv", {
             download: true,
             dynamicTyping: true,
             worker: true,
