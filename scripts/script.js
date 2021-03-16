@@ -43,13 +43,52 @@ async function LoadPresURLS(pres_data) {
     return urls;
 }
 
+function return_left() {
+    sessionStorage.setItem("last_answer", "left");
+    main();
+}
+
+function return_right() {
+    sessionStorage.setItem("last_answer", "right");
+    main();
+}
+
+function mergeStep(left, right) {
+    let arr = []
+    // Break out of loop if any one of the array gets empty
+    while (left.length && right.length) {
+        // Pick the smaller among the smallest element of left and right sub arrays 
+        if (sessionStorage.getItem("last_answer") == "left") {
+            arr.push(left.shift())  
+        } else {
+            arr.push(right.shift()) 
+        }
+    }
+    
+    // Concatenating the leftover elements
+    // (in case we didn't go through the entire left or right array)
+    return [ ...arr, ...left, ...right ]
+}
+
+function mergeSort(array) {
+    const half = array.length / 2
+    
+    // Base case or terminating case
+    if(array.length < 2){
+      return array 
+    }
+    
+    const left = array.splice(0, half)
+    return merge(mergeSort(left),mergeSort(array))
+}
+
 
 async function main() {
     const pres_data = await LoadData()
     const urls = await LoadPresURLS(pres_data);
-
-    document.getElementById("left-button").innerHTML = `<img src="${urls[0]}" width=300 /> ${pres_data[0].name}`;
-    document.getElementById("right-button").innerHTML = `<img src="${urls[1]}" width=300 /> ${pres_data[1].name}`;
+    
+    document.getElementById("left-button").innerHTML = `<img class="pres-pic" src="${urls[0]}"/> ${pres_data[0].name}`;
+    document.getElementById("right-button").innerHTML = `<img class="pres-pic" src="${urls[1]}"/> ${pres_data[1].name}`;
 }
 
 main();
