@@ -1,4 +1,4 @@
-const WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&formatversion=2&prop=pageimages|pageterms&piprop=original&pilicense=any&titles=";
+const WIKI_API_URL = "https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&formatversion=2&prop=pageimages|pageterms&pithumbsize=800&pilicense=any&titles=";
 
 async function GetPortrait(pres_wiki_url) {
     const url_to_fetch = WIKI_API_URL + pres_wiki_url.substring(30);
@@ -7,7 +7,7 @@ async function GetPortrait(pres_wiki_url) {
 
     const wiki_json = await response.json();
 
-    return wiki_json.query.pages[0].original.source;
+    return wiki_json.query.pages[0].thumbnail.source;
 }
 
 async function LoadData() {
