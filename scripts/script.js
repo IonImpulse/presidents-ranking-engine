@@ -127,6 +127,10 @@ function getBaseUrl() {
 function GoHome() {
     document.location = getBaseUrl();
 }
+
+function GoToLocation(url) {
+    document.location = url;
+}
 selected = function (which) {
     switch (which) {
         case 'left':
@@ -182,6 +186,7 @@ async function start() {
         for (i in pres_list.reverse()) {
             let pres_index = parseInt(pres_list[i]);
             holder.innerHTML += `\n<div class="good-button">\b<img class="pres-pic" src="${urls[pres_index]}"/>\n${i - -1}) ${pres_data[pres_index].name}</div>\n`;
+            holder.onclick(GoToLocation(pres_data[pres_index].wiki_url));
         }
 
 
