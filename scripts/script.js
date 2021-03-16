@@ -12,7 +12,7 @@ async function GetPortrait(pres_wiki_url) {
 
 async function LoadData() {
     return new Promise((resolve, reject) => {
-        Papa.parse("https://raw.githubusercontent.com/IonImpulse/presidents-ranking-engine/main/data/bad.csv", {
+        Papa.parse("https://raw.githubusercontent.com/IonImpulse/presidents-ranking-engine/main/data/USPresidents.csv", {
             download: true,
             dynamicTyping: true,
             worker: true,
@@ -179,7 +179,7 @@ async function start() {
 
         holder.innerHTML = "";
 
-        for (i in pres_list) {
+        for (i in pres_list.reverse()) {
             let pres_index = parseInt(pres_list[i]);
             holder.innerHTML += `\n<div class="good-button">\b<img class="pres-pic" src="${urls[pres_index]}"/>\n${i - -1}) ${pres_data[pres_index].name}</div>\n`;
         }
